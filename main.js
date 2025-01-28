@@ -123,18 +123,5 @@ function saveEditStudent(index){
     listStudents();
 }
 
-function findStudents() {
-    const studentId = parseInt(document.getElementById('#studentId').value);
-    if (studentId) {
-        const students = grabStudents();
-        const student = students.find(s => s.id === studentId);
-        if (student) {
-            studentForm();
-            document.getElementById('studentId').value = student.id;
-            document.getElementById('studentName').value = student.name;
-            document.getElementById('studentRank').value = student.rank;
-        }
-    }
-}
 
 listStudents();
