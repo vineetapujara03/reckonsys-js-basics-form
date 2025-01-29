@@ -1,17 +1,78 @@
 const content = document.getElementById('content');
 const studentListLink = document.getElementById('studentListLink');
+const studentUpdateLink = document.getElementById('studentUpdateLink');
 
-function grabStudents() {
-    const students = JSON.parse(localStorage.getItem('students'));
-    return students || []; 
+const API_URL = "http://localhost:3000/students";
+
+
+
+async function grabStudents() {
+    try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Failed to fetch students.');
+            const students = await response.json();
+            return students;
+        }
+    catch (error) {
+        console.log(error.message);
+    }
+   }
+
+
+
+  
+async function storeStudents(student) {
+
+    const method = 'POST'
+  fetch(API_URL, {
+      method: method,
+      body: JSON.stringify(student),
+      headers: {
+          "Content-Type": "application/json; charset=UTF-8"
+      }
+  })
+
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to save student.');
+      }
+      return response.json();
+  })
+
+  .then(data => console.log('Student saved successfully:', data))
+
+  .catch(error => {
+      console.error('Error saving student:', error);
+      alert('Failed to save student.');
+  });
+}
+async function updateStudents(student,id) {
+    const method = 'PUT'
+      fetch(`${API_URL}/${id}`, {
+      method: method,
+      body: JSON.stringify(student),
+      headers: {
+          "Content-Type": "application/json; charset=UTF-8"
+      }
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Failed to save student.');
+      }
+      return response.json();
+  })
+
+  .then(data => console.log('Student saved successfully:', data))
+
+  .catch(error => {
+      console.error('Error saving student:', error);
+      alert('Failed to save student.');
+  });
 }
 
-function storeStudents(students) {
-    localStorage.setItem('students', JSON.stringify(students));
-}
-
-function listStudents() {
-    const students = grabStudents();
+async function listStudents() {
+    const students = await grabStudents();
+   
     if (students.length === 0) {
         content.innerHTML = `<p>Add a student.</p>`;
     } else {
@@ -21,17 +82,19 @@ function listStudents() {
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Rank</th>
+                        <th>Age</th>
+                        <th>Grade</th>
                         <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${  
-                        students.map((student,index,students) => `
+                        students.map((student,index) => `
                         <tr>
                             <td class="studentID" >${student.id}</td>
                             <td class="studentName">${student.name}</td>
-                            <td class="studentRank">${student.rank}</td>
+                             <td class="studentAge" >${student.age}</td>
+                            <td class="studentGrade">${student.grade}</td>
                             <td class="edit" ><button type="button" class="editButton" id="${student.id}" onclick="editStudent(${index})" >Edit</button></td
                         </tr>
                     `).join('')
@@ -45,15 +108,17 @@ function listStudents() {
 
 }
 
-function studentForm(index) {
+async function studentForm(index) {
     const form = `
         <form>
             <label for="studentId">Student ID:</label>
             <input type="number" id="studentId" placeholder="Enter Student ID" required>
             <label for="studentName">Student Name:</label>
             <input type="text" id="studentName" placeholder="Enter Student Name" required>
-            <label for="studentRank">Student Rank:</label>
-            <input type="number" id="studentRank" placeholder="Enter Student Rank" required>
+            <label for="studentAge">Student Age:</label>
+            <input type="number" id="studentAge" placeholder="Enter Student Age" required>
+            <label for="studentGrade">Student Grade:</label>
+            <input type="text" id="studentGrade" placeholder="Enter Student Grade" required>
             <button class="submitButton" type="button" onclick="${typeof index == 'number' ? `saveEditStudent(${index})` : "saveStudent()"}">Update Student</button>
            
         </form>
@@ -61,24 +126,21 @@ function studentForm(index) {
     content.innerHTML = form;
     
 }
-
-function saveStudent() {
-    const studentId = parseInt(document.getElementById('studentId').value);
+async function saveStudent() {
+    const studentId = parseInt(document.getElementById('studentId').value); 
     const studentName = document.getElementById('studentName').value;
-    const studentRank = document.getElementById('studentRank').value;
-
-    if (studentId && studentName && studentRank) {
-        let students = grabStudents();
-    
-            students.push({ id: studentId, name: studentName, rank: studentRank });
-        
-        storeStudents(students);
-     
-        alert("Student saved successfully!");
-        listStudents();
+    const studentAge = parseInt(document.getElementById('studentAge').value);
+    const studentGrade = document.getElementById('studentGrade').value;
+   
+    if (studentName && studentGrade) {
+        const student = { id: studentId, name: studentName, age: studentAge, grade:studentGrade }; 
+        await storeStudents(student);
+        alert('Student saved successfully!');
+        await listStudents();
+    } else {
+        alert('Please fill in all required fields.');
     }
 }
-
 
 studentListLink.addEventListener('click', (e) => {
     e.preventDefault();
@@ -91,37 +153,38 @@ studentUpdateLink.addEventListener('click', (e) => {
 });
 
 
-function editStudent(index){
-    console.log("run")
-  
+async function editStudent(index){
+   
     studentForm(index);
     
-    let editStudents = localStorage.getItem("students")
+    let editStudents =await fetch(API_URL);
     
-    parsedStudents = JSON.parse(editStudents);
+    parsedStudents = await editStudents.json();
     
    const student = parsedStudents[index];
    
    document.getElementById('studentId').value = student.id;
    document.getElementById('studentName').value = student.name;
-   document.getElementById('studentRank').value = student.rank;
+   document.getElementById('studentAge').value = student.age;
+   document.getElementById('studentGrade').value = student.grade;
+ 
 }
 
-function saveEditStudent(index){
-    editStudents = localStorage.getItem("students")
+async function saveEditStudent(index){
      
-    parsedStudents = JSON.parse(editStudents);
+   const editStudents = await fetch(API_URL);
+    parsedStudents = await editStudents.json();
+   
+    const student = parsedStudents[index];
     
-   const student = parsedStudents[index];
-
     student.id = parseInt(document.getElementById('studentId').value);
     student.name= document.getElementById('studentName').value;
-    student.rank = document.getElementById('studentRank').value;
-     
-    localStorage.setItem("students",JSON.stringify(parsedStudents)); 
-    storeStudents(parsedStudents);
-    listStudents();
-}
+    student.age = parseInt(document.getElementById('studentAge').value);
+    student.grade = document.getElementById("studentGrade").value;
+    
+    await updateStudents(student,student.id);
+    await listStudents();
+    }
 
 
 listStudents();
