@@ -48,7 +48,7 @@ async function storeStudents(student) {
 }
 async function updateStudents(student,id) {
     const method = 'PUT'
-      fetch(`${API_URL}/${id}`, {
+      await fetch(`${API_URL}/${id}`, {
       method: method,
       body: JSON.stringify(student),
       headers: {
