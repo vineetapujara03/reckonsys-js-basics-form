@@ -24,7 +24,7 @@ async function grabStudents() {
 async function storeStudents(student) {
 
     const method = 'POST'
-  fetch(API_URL, {
+    fetch(API_URL, {
       method: method,
       body: JSON.stringify(student),
       headers: {
@@ -47,6 +47,7 @@ async function storeStudents(student) {
   });
 }
 async function updateStudents(student,id) {
+   
     const method = 'PUT'
       await fetch(`${API_URL}/${id}`, {
       method: method,
@@ -59,6 +60,7 @@ async function updateStudents(student,id) {
       if (!response.ok) {
           throw new Error('Failed to save student.');
       }
+     
       return response.json();
   })
 
@@ -71,8 +73,9 @@ async function updateStudents(student,id) {
 }
 
 async function listStudents() {
-    const students = await grabStudents();
-   
+    const response = await fetch(API_URL);
+     const students = await response.json();
+     console.log(students);
     if (students.length === 0) {
         content.innerHTML = `<p>Add a student.</p>`;
     } else {
@@ -96,7 +99,8 @@ async function listStudents() {
                              <td class="studentAge" >${student.age}</td>
                             <td class="studentGrade">${student.grade}</td>
                             <td class="edit" ><button type="button" class="editButton" id="${student.id}" onclick="editStudent(${index})" >Edit</button></td
-                        </tr>
+                            
+                            </tr>
                     `).join('')
                  
                 }
@@ -119,21 +123,26 @@ async function studentForm(index) {
             <input type="number" id="studentAge" placeholder="Enter Student Age" required>
             <label for="studentGrade">Student Grade:</label>
             <input type="text" id="studentGrade" placeholder="Enter Student Grade" required>
+
             <button class="submitButton" type="button" onclick="${typeof index == 'number' ? `saveEditStudent(${index})` : "saveStudent()"}">Update Student</button>
-           
         </form>
+            <div class="wrap">
+            <input id="studentFile" type="file" name="file" />
+            <button type="submit" onclick="uploadFile(event)">upload</button>
+            </div>
     `;
     content.innerHTML = form;
     
 }
+
 async function saveStudent() {
     const studentId = parseInt(document.getElementById('studentId').value); 
     const studentName = document.getElementById('studentName').value;
     const studentAge = parseInt(document.getElementById('studentAge').value);
     const studentGrade = document.getElementById('studentGrade').value;
-   
+  
     if (studentName && studentGrade) {
-        const student = { id: studentId, name: studentName, age: studentAge, grade:studentGrade }; 
+        const student = { id: studentId, name: studentName, age: studentAge, grade:studentGrade,file : studentFile }; 
         await storeStudents(student);
         alert('Student saved successfully!');
         await listStudents();
@@ -157,7 +166,8 @@ async function editStudent(index){
    
     studentForm(index);
     
-    let editStudents =await fetch(API_URL);
+
+    let editStudents = await fetch(API_URL);
     
     parsedStudents = await editStudents.json();
     
@@ -167,7 +177,7 @@ async function editStudent(index){
    document.getElementById('studentName').value = student.name;
    document.getElementById('studentAge').value = student.age;
    document.getElementById('studentGrade').value = student.grade;
- 
+  
 }
 
 async function saveEditStudent(index){
@@ -182,9 +192,29 @@ async function saveEditStudent(index){
     student.age = parseInt(document.getElementById('studentAge').value);
     student.grade = document.getElementById("studentGrade").value;
     
-    await updateStudents(student,student.id);
-    await listStudents();
+     await updateStudents(student,student.id);
+     await listStudents();
     }
 
+async function uploadFile(event){
+    event.preventDefault();
+    const file = document.getElementById("studentFile");
+  
+    let formData = new FormData();
+    formData.append("file",file.files[0]);
+   try {
+     let response =  await fetch(`http://localhost:3000/upload`, {
+         method: "POST",
+        body: formData
+    });
+    if (!response.ok) throw new Error('Failed to upload file.');
+    const data = await response.json();
+    console.log('File uploaded successfully:', data);
+    alert('File uploaded successfully!');
 
+} catch (error) {
+    console.error('Error uploading file:', error);
+    alert('Failed to upload file.');
+}
+}
 listStudents();
