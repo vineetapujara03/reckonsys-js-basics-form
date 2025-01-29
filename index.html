@@ -3,150 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="./style.css" >
-    
-    <title>Forms</title>
+    <link rel="stylesheet" href="./style1.css">
+    <title>Student Management</title>
+   
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-container">
-            <img class="logo" alt="logo" src="./Logo.svg" width="35px" height="35px" />
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#availability">Availability</a></li>
-                <li><a href="#integrations">Integrations</a></li>
-                <li><a href="#help">Help <img src="./arrow.svg" /></a></li>
-                <li>  
-                    <div class="wrap">
-                    <img class="icon" src="./Image.svg" />
-                    <a href="#account">Account <img src="./arrow.svg" /></a>
-                   </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <div class="settings">
-        <div>Account Settings</div>
-    </div>
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link active" href="#" id="studentListLink">Student List</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="studentUpdateLink">Student Update Form</a>
+        </li>
+    </ul>
+    <div class="content" id="content"></div>
 
-    <div class="main-container">
-        <div class="left-container">
-           <ul class="user-options">
-            <li>Profile</li>
-            <li>Branding</li>
-            <li>My link</li>
-            <li>Phone Number(s)</li>
-            <li>Login</li>
-            <li>Cookie settings</li>
-           </ul>
-        </div>
-        <div class="right-container">
-            <form>
-
-                <div class="form-group">
-                    <label for="profile-pic"></label>
-                    <div class="profile-pic">
-                        <img src="./Image.svg" alt="logo" />
-                      <button type="update" class="update">Update</button>
-                      <button type="button" class="remove">
-                        <div class="remove-wrapper">
-                        <img class="delete-button" src="./Icon.svg" />
-                        <div>Remove</div>
-                    </button>
-                    </div>
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="name">
-                        <div class="wrapper-1">
-                            <div>Name</div>
-                            <img src="./Frame.svg" alt="logo" />
-                           </div> </label>
-                    <input type="text" id="name" value="Morty Smith">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="welcome-message">
-                        <div class="wrapper-1">
-                        <div>Welcome Message</div>
-                        <img src="./Frame.svg" alt="logo" />
-                    </div>
-                    </label>
-                    <textarea id="welcome-message" rows="4">Welcome to my scheduling page. Please follow the instructions to add an event to my calendar.
-                    </textarea>
-                  </div>
-          
-                  <div class="form-group">
-                    <label for="language">Language</label>
-                    <select id="language">
-                      <option>English</option>
-                      <option>Spanish</option>
-                      <option>French</option>
-                    </select>
-                  </div>
-          
-                  <div class="form-group wrapper">
-                    <div class="wrap-1">
-                    <label for="date-format">
-                        <div class="wrapper-1">
-                        <div>Date Format</div>
-                        <img src="./Frame.svg" alt="logo" />
-                    </div>
-                    </label>
-                    <select id="date-format">
-                      <option>MM/DD/YYYY</option>
-                      <option>DD/MM/YYYY</option>
-                    </select>
-                </div>
-                  <div class="wrap-2">
-                    <label for="time-format">
-                    <div class="wrapper-1">
-                        <div>Time Format</div>
-                        <img src="./Frame.svg" alt="logo" />
-                    </div>
-                    </label>
-                    <select id="time-format">
-                      <option>12h (am/pm)</option>
-                      <option>24h</option>
-                    </select>
-                </div>
-                  </div>
-          
-                  <div class="form-group">
-                    <label for="country">Country</label>
-                    <select id="country">
-                      <option>United States</option>
-                      <option>Canada</option>
-                    </select>
-                  </div>
-          
-                  <div class="form-group">
-                    <label for="time-zone">
-                        <div class="time-zone-label">
-                            <div class="left"> Time Zone</div>
-                            <div class="right">Current Time: 10:02pm</div>
-                        </div>
-                       </label>
-                    <select id="time-zone">
-                      <option>Central Time - US & Canada</option>
-                      <option>Eastern Time - US & Canada</option>
-                    </select>
-                  </div>
-          
-                  <div class="buttons">
-                    <div class="button-wrapper">
-                    <button type="submit" class="save">Save Changes</button>
-                    <button type="submit" class="cancel">Cancel</button>
-                </div>
-                    <button type="button" class="delete">Delete Account</button>
-                  </div>
-            </form>
-        </div>
-    </div>
+    
     <script src="./main.js"></script>
 </body>
 </html>
